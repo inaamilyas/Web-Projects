@@ -1,0 +1,32 @@
+.container{
+    width: 100%;
+    height: 87.4vh;
+    background: rgb(248, 248, 248);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.box{
+    width: 40%;
+    height: auto;
+    background: white;
+    padding: 10px;
+}
+.box form{
+    width: 100%;
+    height: auto;
+    background: white;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.box form p, .box form input, .box form button{
+    margin: 5px 0;
+    padding: 5px 0;
+    font-size: 20px;
+}
+.box form input{
+    margin: 0 0 5px 0;
+}

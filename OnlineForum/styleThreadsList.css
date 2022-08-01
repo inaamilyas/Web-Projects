@@ -1,0 +1,95 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.container {
+  width: 60%;
+  height: auto;
+  min-height: 40vh;
+  background: rgb(219 217 217);
+  margin: 20px auto;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 5px;
+}
+.container h1 {
+  font-size: 50px;
+  margin: 10px 0;
+  padding: 5px;
+}
+.container p,
+.container a {
+  font-size: 18px;
+  margin: 10px 0;
+  padding: 5px;
+}
+.container2 {
+  width: 60%;
+  height: auto;
+  min-height: 42vh;
+  margin: 10px auto;
+  border-radius: 5px;
+  padding: 5px;
+}
+.container2 h1 {
+  font-size: 30px;
+  margin: 5px 0;
+  padding: 5px 0;
+}
+.questions-box {
+  display: flex;
+  margin: 10px 0;
+}
+.user img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.container3 {
+  width: 100%;
+  min-height: 20vh;
+  background: rgb(219 217 217);
+  padding: 20px;
+  border: 2px solid black;
+}
+.container3 p {
+  font-size: 20px;
+}
+.container3 p:nth-child(1) {
+  font-size: 50px;
+}
+
+.container4 {
+  width: 60%;
+}
+.discussionForm {
+  display: flex;
+  flex-direction: column;
+}
+.discussionForm label {
+  font-size: 20px;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+.discussionForm input,
+.discussionForm textarea {
+  font-size: 20px;
+  padding: 5px 0;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+#submit {
+  width: 110px;
+  background: black;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.blur {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,1182 @@
+index.php
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDiscuss | Coding Forum</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Including Header -->
+    <?php include "Partials/_dbconnect.php" ?>
+    <?php include "Partials/_header.php" ?>
+
+    <div class="container">
+        <div class="landing">
+            
+            <div>
+                <h1>iDiscuss</h1>
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam iure nostrum iusto vero pariatur?
+                </p>
+            </div>
+            <img src="bg.jpg" alt="">
+
+        </div>
+
+        <h2 class="text-center">iDiscuss -Browse Categories</h2>
+<!-- Categories Container  -->
+        <div class="row">
+            <!-- Fetch All the categories  -->
+            <?php
+             $sql = "SELECT * FROM `categories`" ;
+             $result = mysqli_query( $connect, $sql);
+            //   Loop to iterate the categries from the database
+            $category_count=0; //Variable for categories count 
+             while($row = mysqli_fetch_assoc($result)){
+                //  echo $row['Category_ID']. " " . $row['Category_Name'] ." : ". $row['Category_Description'] . "<br>"; //Fetching categories from database
+                $category_count++;
+                $catID = $row['Category_ID'];
+                $category = $row['Category_Name'];
+                $catDescription = $row['Category_Description'];
+                echo '<div class="card">
+                <img src="1.jpg" alt="" class="category-img">
+                <h3><a href="threadsList.php?catID=' . $catID . '">' . $category . '</a></h3>
+                <p>' . substr($catDescription, 0, 30) . '.....</p>
+                <a href="threadsList.php?catID=' . $catID .'"><button type="button" class="card-btn">View Threads</button></a>
+            </div>';
+
+            if($category_count>4){
+                echo '<a href="categories.php">Load More</a>';
+                exit;
+            }
+             }
+            ?>
+        </div>
+    </div>
+
+    <!-- Including Footer -->
+    <?php include "Partials/_footer.php" ?>
+</body>
+
+</html>
+
+----------------------------------------------------------------------------------------------------------
+
+about.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDiscuss | About Us</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Including Header -->
+    <?php include "Partials/_header.php" ?>
+
+    <!-- Including Footer -->
+    <?php include "Partials/_footer.php" ?>
+</body>
+</html>
+
+----------------------------------------------------------------------------------------------------------
+Categories.php
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDiscuss | Catrgories</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styleThreadsList.css">
+</head>
+
+<body>
+    <!-- Connecting to the database  -->
+    <?php include "Partials/_dbconnect.php" ?>
+    <!-- Including Header -->
+    <?php include "Partials/_header.php" ?>
+
+    <?php
+    $showAlert = false;
+    $category_exist = false;
+    $method = $_SERVER['REQUEST_METHOD'];
+    if($method == 'POST'){
+        $category_Title = $_POST['categoryTitle'];
+        // Saving from XSS attack
+        $category_Title = str_replace("<", "@lt", $category_Title);
+        $category_Title = str_replace(">", "@gt", $category_Title);
+
+        $category_Description = $_POST['categoryDescription'];
+        // Saving from XSS attack
+        $category_Description = str_replace("<", "@lt", $category_Description);
+        $category_Description = str_replace(">", "@gt", $category_Description);
+
+        // $sql = "SELECT * FROM `categories` WHERE Category_Name = '$category_Title'" ;
+        //  $result = mysqli_query( $connect, $sql);
+        // if(!$result){
+            //   Loop to iterate the categries from the database
+            // while($row = mysqli_fetch_assoc($result)){
+                $sql = "INSERT INTO `categories` (`Category_Name`, `Category_Description`, `Created`) VALUES ('$category_Title', '$category_Description', current_timestamp())";
+                $result = mysqli_query($connect, $sql);
+            // }
+        // }
+        // else{
+        //     $category_exist = true;
+        // }
+        $showAlert = true;
+    }
+    ?>
+
+
+<h1 class="text-center" style="margin-top:20px; font-size:50px; ">Categories</h1>
+    <div class="container">
+
+        <?php
+        if(isset($_SESSION['loggedin']) && $_SESSION['loggedin']== true){
+
+        // <!-- Category form -->
+        echo '
+            <form class="categoryForm" action="' . $_SERVER["REQUEST_URI"] . '" method="post">
+                <label for="category-title">Enter Category Title</label>
+                <input type="text" name="categoryTitle" id="categoryTitle" placeholder="Enter title here">';
+                echo '<label for="category-title">Enter Category Description</label>
+                <input type="text" name="categoryDescription" id="categoryDescription"  placeholder="Enter description here" required>
+                <button type="submit" class="card-btn">Add Category</button>
+            </form>';
+        }
+        else{
+            echo '<div class="container container4 blur">
+            <h1><a href="_loginForm.php" style="font-size: 50px; text-decoration: none;">Signin</a> to Post a Comment</h1>
+            </div>';
+        }
+        ?>
+</div>
+        <hr>
+        <h1 class="text-center">All Categories</h1>
+        <div class="row">
+            <!-- Fetch All the categories  -->
+            <?php
+             $sql = "SELECT * FROM `categories`" ;
+             $result = mysqli_query( $connect, $sql);
+            //   Loop to iterate the categries from the database
+             while($row = mysqli_fetch_assoc($result)){
+                //  echo $row['Category_ID']. " " . $row['Category_Name'] ." : ". $row['Category_Description'] . "<br>"; //Fetching categories from database
+
+                $catID = $row['Category_ID'];
+                $category = $row['Category_Name'];
+                $catDescription = $row['Category_Description'];
+                echo '<div class="card">
+                <img src="1.jpg" alt="" class="category-img">
+                <h3><a href="threadsList.php?catID=' . $catID . '">' . $category . '</a></h3>
+                <p>' . substr($catDescription, 0, 30) . '.....</p>
+                <a href="threadsList.php?catID=' . $catID .'"><button type="button" class="card-btn">View Threads</button></a>
+            </div>';
+             }
+            ?>
+        </div>
+
+       
+    <!-- </div> -->
+
+    <!-- Including Footer -->
+    <?php include "Partials/_footer.php" ?>
+</body>
+
+</html>
+
+----------------------------------------------------------------------------------------------------------
+
+Contact.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDiscuss | Contact Us</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Including Header -->
+    <?php include "Partials/_header.php" ?>
+
+    <!-- Including Footer -->
+    <?php include "Partials/_footer.php" ?>
+</body>
+</html>
+
+----------------------------------------------------------------------------------------------------------
+
+search.php
+
+<!-- ALTER TABLE threads ADD FULLTEXT(`Thread_Title` ,`Thread_Description`); //Enabling search functionality
+SELECT * FROM `threads` WHERE MATCH (`Thread_Title`, `Thread_Description`) against ('install'); // Query to match records -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDiscuss | Coding Forum</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styleThreadsList.css">
+    <style>
+        .container {
+            min-height: 82vh;
+            width: 70%;
+            margin: 10px auto;
+            padding: 10px;
+        }
+        .container ol li{
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Including Header -->
+    <?php include "Partials/_dbconnect.php" ?>
+    <?php include "Partials/_header.php" ?>
+
+
+    <div class="container">
+        <h1>Search results for " <em>
+            <?php echo $_GET['search']; ?>  </em>"
+        </h1>
+        <ol>
+    <?php
+    $noResult = false;
+    $searchTerm = $_GET['search'];
+    $sql = "SELECT * FROM `threads` WHERE MATCH (`Thread_Title`, `Thread_Description`) against ('$searchTerm')" ;
+    $result = mysqli_query( $connect, $sql);
+    while($row = mysqli_fetch_assoc($result)){
+        $thread_Title = $row['Thread_Title'];
+        $thread_Description = $row['Thread_Description'];
+        $thread_ID = $row['Thread_ID'];
+        $url = "thread.php?thread_ID=$thread_ID";
+        $noResult = true;
+
+        //Display search results
+        echo '<li>
+            <div class="result">
+                <h4> <a href="'.$url.'">'. $thread_Title .'</a> </h4>
+                <p>' . $thread_Description . ' </p>
+            </div>
+        </li>';
+        }
+        if($noResult == false){
+            echo '<div class="container3">
+                <p>No results found</p>
+            </div>';
+        }
+    ?>
+    </ol>
+    </div>
+
+    <!-- Including Footer -->
+    <?php include "Partials/_footer.php" ?>
+</body>
+
+</html>
+
+----------------------------------------------------------------------------------------------------------
+
+thread.php
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDiscuss | Threads</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styleThreadsList.css">
+</head>
+
+<body>
+
+    <!-- Including Header -->
+    <?php include "Partials/_header.php" ?>
+    <?php include "Partials/_dbconnect.php" ?>
+    <?php
+    $thread_ID = $_GET['thread_ID'];
+    $sql = "SELECT * FROM `threads` WHERE Thread_ID = '$thread_ID'" ;
+    $result = mysqli_query( $connect, $sql);
+    while($row = mysqli_fetch_assoc($result)){
+        $thread_Title = $row['Thread_Title'];
+        $thread_Description = $row['Thread_Description'];
+        $thread_User_ID = $row['Thread_User_ID'];
+
+        //Query users table to get email of User_id thread user ID
+        $sql2 = "SELECT * FROM `users` WHERE User_ID='$thread_User_ID'";
+        $result2 = mysqli_query($connect, $sql2);
+        $row2 = mysqli_fetch_assoc($result2);
+        $posted_By = $row2['User_Email'];
+        
+    }
+    ?>
+
+<?php
+    $showAlert = false;
+    $method = $_SERVER['REQUEST_METHOD'];
+    if($method == 'POST'){
+        $comment_Content = $_POST['comment_Content'];
+        // Saving from XSS attack
+        $comment_Content = str_replace("<", "&lt", $comment_Content);
+        $comment_Content = str_replace(">", "&gt", $comment_Content);
+        
+        $Comment_By = $_POST['User_ID'];
+        if($comment_Content != NULL){
+            $sql = "INSERT INTO `comments` (`Comment_Content`, `Thread_ID`, `Comment_By`, `Comment_Time`) VALUES ('$comment_Content', '$thread_ID', '$Comment_By', current_timestamp())";
+            $result = mysqli_query($connect, $sql);
+        }
+        else{
+            echo "Record was not inserted";
+        }
+        $showAlert = true;
+    }
+    ?>
+
+    <div class="container">
+        <h1> <?php echo $thread_Title; ?> </h1>
+        <p><?php echo $thread_Description; ?></p>
+        <p><Strong>Desclaimer: </Strong>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Impedit at, ab eveniet dolorem similique provident nemo distinctio expedita dolore iste. Tenetur, deleniti numquam.</p>
+        <p>Posted by : <b><?php echo $posted_By ?></b></p>
+    </div>
+
+<?php
+if(isset($_SESSION['loggedin']) && $_SESSION['loggedin']== true){
+    echo '<div class="container container4 ">
+        <h1>Post a Comment</h1>
+        <form href="' . $_SERVER["REQUEST_URI"] . '" method="post" class="discussionForm">
+            <label for="ThreadDescription">Type your comment</label>
+            <textarea name="comment_Content" id="comment" cols="20" rows="5" placeholder="Enter your comment here"></textarea>
+            <input type="submit" name="submit" id="submit" value="Post">
+            <input type="hidden" name="User_ID" id="User_ID" value="'.$_SESSION['User_ID'].'">
+        </form>
+    </div>';
+}
+else{
+    echo '<div class="container container4 blur">
+    <h1><a href="_loginForm.php" style="font-size: 50px; text-decoration: none;">Signin</a> to Post a Comment</h1>
+</div>';
+}
+
+?> 
+
+    <div class="container2">
+        <h1>Comments</h1>
+    <?php
+    $thread_ID = $_GET['thread_ID'];
+    $sql = "SELECT * FROM `comments` WHERE Thread_ID = $thread_ID";
+    $result = mysqli_query( $connect, $sql);
+    $noResult = true;
+    while($row = mysqli_fetch_assoc($result)){
+        $noResult = false;
+        $comment_ID = $row['Comment_ID'];
+        $comment_Content = $row['Comment_Content'];
+        $comment_Time = $row['Comment_Time'];
+        $Comment_By = $row['Comment_By'];
+        
+        $sql2 = "SELECT * FROM `users` WHERE User_ID ='$Comment_By'";
+        $result2 = mysqli_query( $connect, $sql2);
+        $row2 = mysqli_fetch_assoc($result2);
+        // echo "User email is ". $row2['User_Email'];
+        echo '<div class="questions-box">
+             <div class="user">
+                 <img src="user.png" alt="">
+             </div>
+             <div class="question">
+                 <p style="font-weight: bold; text-decoration: underline;" >'.$row2['User_Email'] .' '.$comment_Time.'</p>
+                 <p>'.$comment_Content.'</p>
+             </div>
+         </div>';
+    }
+    if($noResult == true){
+        echo '<div class="container3">
+            <p>No comments for this thread</p>
+            <p>Be the first to add a comment?</p>
+        </div>';
+    }
+    ?>
+
+
+    </div>
+
+    <!-- Including Footer -->
+    <?php include "Partials/_footer.php" ?>
+</body>
+
+</html>
+
+----------------------------------------------------------------------------------------------------------
+
+threadList.php
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDiscuss | Threads List</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styleThreadsList.css">
+</head>
+
+<body>
+
+    <!-- Including Header -->
+    <?php include "Partials/_header.php" ?>
+    <?php include "Partials/_dbconnect.php" ?>
+    <?php
+    $catID = $_GET['catID'];
+    $sql = "SELECT * FROM `categories` WHERE Category_ID = $catID" ;
+    $result = mysqli_query( $connect, $sql);
+    while($row = mysqli_fetch_assoc($result)){
+        $category_Name = $row['Category_Name'];
+        $category_Description = $row['Category_Description'];
+    }
+    ?>
+
+    <?php
+    $showAlert = false;
+    $method = $_SERVER['REQUEST_METHOD'];
+    if($method == 'POST'){
+        $thread_Title = $_POST['ThreadTitle'];
+        // Saving from XSS attack
+        $thread_Title = str_replace("<", "@lt", $thread_Title);
+        $thread_Title = str_replace(">", "@gt", $thread_Title);
+
+        $thread_Description = $_POST['ThreadDescription'];
+        // Saving from XSS attack
+        $thread_Description = str_replace("<", "@lt", $thread_Description);
+        $thread_Description = str_replace(">", "@gt", $thread_Description);
+
+        $thread_User_ID = $_POST['User_ID'];
+        if($thread_Title != NULL && $thread_Description != NULL){
+            $sql = "INSERT INTO `threads` (`Thread_Title`, `Thread_Description`, `Thread_User_ID`, `Thread_Category_ID`, `Timestamp`) VALUES ('$thread_Title', '$thread_Description', '$thread_User_ID', '$catID', current_timestamp())";
+            $result = mysqli_query($connect, $sql);
+        }
+        else{
+            // echo "Record was not inserted";
+        }
+        $showAlert = true;
+    }
+    ?>
+
+
+    <div class="container">
+        <h1>Welcome to <?php echo $category_Name; ?> Forum</h1>
+        <p><?php echo $category_Description; ?></p>
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima quia, reiciendis consequatur soluta, tenetur
+            odit dolore doloremque exercita</p>
+        <a href="#" type="button">Learn More</a>
+    </div>
+
+<?php
+
+if(isset($_SESSION['loggedin']) && $_SESSION['loggedin']== true){
+    echo '<div class="container container4">
+        <h1>Start a Discussion</h1>
+        <form href="' . $_SERVER["REQUEST_URI"] . '" method="post" class="discussionForm">
+            <label for="ThreadTitle">Thread Title</label>
+            <input type="text" name="ThreadTitle" id="ThreadTitle" placeholder="Enter your thread title">
+            <label for="ThreadDescription">Thread Description</label>
+            <textarea name="ThreadDescription" id="ThreadDescription" cols="20" rows="5" placeholder="Enter your Thread description here"></textarea>
+            <input type="submit" name="submit" id="submit">
+            <input type="hidden" name="User_ID" id="User_ID" value="'.$_SESSION['User_ID'].'"><input type="hidden" name="User_ID" id="User_ID" value="'.$_SESSION['User_ID'].'">
+        </form>
+    </div>';
+} 
+else{
+    echo '<div class="container container4 blur">
+    <h1><a href="_loginForm.php" style="font-size: 50px; text-decoration: none;">Signin</a> to Start Discussion</h1>
+    </div>';
+}
+?>
+
+    <div class="container2">
+        <h1>Browse Questions</h1>
+
+    <?php
+    $catID = $_GET['catID'];
+    $sql = "SELECT * FROM `threads` WHERE Thread_category_ID = $catID";
+    $result = mysqli_query( $connect, $sql);
+    $noResult = true;
+    while($row = mysqli_fetch_assoc($result)){
+        $noResult = false;
+        $thread_ID = $row['Thread_ID'];
+        $thread_Title = $row['Thread_Title'];
+        $thread_Description = $row['Thread_Description'];
+        $thread_Time = $row['Timestamp'];
+        $thread_User_ID = $row['Thread_User_ID'];
+        // echo "Thread user id = ". $thread_User_ID;
+        $sql2 = "SELECT * FROM `users` WHERE User_ID=$thread_User_ID";
+        $result2 = mysqli_query($connect, $sql2);
+        $row2 = mysqli_fetch_assoc($result2);
+        // echo "<br>User email is ". $row2['User_Email'];
+
+
+        echo '<div class="questions-box">
+             <div class="user">
+                 <img src="user.png" alt="">
+             </div>
+             <div class="question">
+                 <a href="thread.php?thread_ID=' .$thread_ID. '"><h3>'.$thread_Title.'</h3></a>
+                 <p style="font-weight: bold; font-size: 10px; text-decoration: underline;" >' . $row2['User_Email'] . ' '.$thread_Time.'</p>
+                 <p>'.$thread_Description.'</p>
+             </div>
+         </div>';
+    }
+    if($noResult == true){
+        echo '<div class="container3">
+            <p>No related discussion for this category</p>
+            <p>Be the first to ask question?</p>
+        </div>';
+    }
+    ?>
+
+    </div>
+
+    <!-- Including Footer -->
+    <?php include "Partials/_footer.php" ?>
+</body>
+
+</html>
+
+----------------------------------------------------------------------------------------------------------
+
+loginform.php
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDuscuss | Signin</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styleLoginSignup.css">
+</head>
+
+<body>
+
+    <!-- Including Header -->
+    <?php include "Partials/_header.php" ?>
+    <div class="container">
+        <div class="box">
+            <form action="Partials/_handleSignin.php" method="post">
+                <div class="email">
+                    <p>Enter Email</p>
+                    <input type="email" name="signinEmail" id="signinEmail" placeholder="Enter email here">
+                </div>
+
+                <div class="email">
+                    <p>Enter Password</p>
+                    <input type="password" name="signinPassword" id="signinPassword" placeholder="Enter password here">
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+    <!-- Including Footer -->
+    <?php include "Partials/_footer.php" ?>
+</body>
+
+</html>
+
+----------------------------------------------------------------------------------------------------------
+
+logout.php
+
+<?php
+echo "Logging you out";
+session_start();
+session_destroy();
+header("Location: /PHP/OnlineForum/")
+
+
+?>
+
+----------------------------------------------------------------------------------------------------------
+Signupform.php
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iDuscuss | Signin</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styleLoginSignup.css">
+</head>
+
+<body>
+    <!-- Including Header -->
+    <?php include "Partials/_header.php" ?>
+    <div class="container">
+        <div class="box">
+            <form action="Partials/_handleSignup.php" method="post">
+                <div class="email">
+                    <p>Enter Email</p>
+                    <input type="email" name="signupEmail" id="signupEmail" placeholder="Enter email here">
+                </div>
+
+                <div class="email">
+                    <p>Enter Password</p>
+                    <input type="password" name="signupPassword" id=signupPassword" placeholder="Enter password here">
+                </div>
+
+                <div class="email">
+                    <p>Confirm Password</p>
+                    <input type="password" name="ConfrimPassword" id=ConfirmPassword" placeholder="Enter password here">
+                </div>
+                <button type="submit">Signup</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Including Footer -->
+    <?php include "Partials/_footer.php" ?>
+</body>
+
+</html>
+----------------------------------------------------------------------------------------------------------
+
+dbconnect.php
+
+<?php
+//Connection to the database
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "idiscuss";
+
+$connect = mysqli_connect($servername, $username, $password, $database);
+?>
+
+----------------------------------------------------------------------------------------------------------
+
+footer.php
+
+<?php
+echo '<footer>
+<p>&copy CopyRight iDiscuss | All Rights Reserved</p>
+</footer>';
+
+?>
+
+
+----------------------------------------------------------------------------------------------------------
+header.php
+
+<?php
+session_start();
+
+echo '<header>
+<nav id="navbar">
+    <div class="nav-left">
+    <ul>
+            <a href="index.php"><h1>iDiscuss</h1></a>
+            <li><a href="index.php">Home</a></li>
+            <li><a href="categories.php">Categories</a></li>
+            <li><a href="contact.php">Contact</a></li>
+            <li><a href="about.php">About Us</a></li>
+        </ul>
+    </div>
+
+    <div class="nav-right">
+        <form method="get" action="search.php">
+            <input type="text" name="search" id="search" placeholder="Search" class="input-box">
+            <button type="submit" class=" search-btn btn">Search</button>
+        </form>';
+        if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] = true){
+            echo '<p>' . $_SESSION['User_Email'] . '</p>'.
+            '<a href="_logout.php"><button name="logout" type="button" class="btn">Logout</button></a>';
+        }
+        else{
+        echo '<a href="_signupForm.php"><button name="signup" type="button" class="btn">Signup</button></a>
+        <a href="_loginForm.php"><button name="signin" type="button" class="btn">Signin</button></a>';
+        }
+    echo'</div>
+
+</nav>
+</header>';
+
+if(isset($_GET['signupSuccess']) && $_GET['signupSuccess'] == "true"){
+    // echo "yes"; //Add Alert here on signin success
+}
+
+
+?>
+
+
+----------------------------------------------------------------------------------------------------------
+handleSignin.php
+
+<?php
+$showAlert = "false";
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    include "_dbconnect.php";
+    $user_Email = $_POST['signinEmail'];
+    $user_Password = $_POST['signinPassword'];
+
+    //Check whether this email exist or not
+    $exist_sql = "SELECT * FROM `users` WHERE User_Email = '$user_Email'";
+    $result = mysqli_query($connect, $exist_sql);
+    $num_rows = mysqli_num_rows($result);
+    if($num_rows==1){
+        $row = mysqli_fetch_assoc($result);
+        if (password_verify($user_Password, $row['User_Password'])) {
+            session_start();
+            $_SESSION['loggedin'] = true;
+            $_SESSION['User_ID'] = $row['User_ID'];
+            $_SESSION['User_Email'] = $user_Email;
+            header("Location: /PHP/OnlineForum/");
+            exit();
+        }
+        else{
+            echo "Invalid credentials";
+        }
+    } 
+    else{
+        echo "Email doesn't exist";
+    }
+}
+?>
+
+
+----------------------------------------------------------------------------------------------------------
+
+handleSignup.php
+
+<?php
+$showAlert = "fasle";
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    include "_dbconnect.php";
+    $user_Email = $_POST['signupEmail'];
+    $user_Password = $_POST['signupPassword'];
+    $Confrim_Password = $_POST['ConfrimPassword'];
+
+    //Check whether this email exist or not
+    $exist_sql = "SELECT * FROM `users` WHERE User_Email = '$user_Email'";
+    $result = mysqli_query($connect, $exist_sql);
+    $num_rows = mysqli_num_rows($result);
+    if($num_rows>0){
+        $showError = "Email alread exist";
+    }
+    else{
+        if ($user_Password == $Confrim_Password) {
+            $hash = password_hash($user_Password, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO `users` (`User_Email`, `User_Password`, `Signup_Timestamp`) VALUES ('$user_Email', '$hash', current_timestamp())";
+            $result = mysqli_query($connect, $sql);
+            if($result){
+                $showAlert = true;
+                header("Location: ../index.php?signupSuccess=true");
+                exit();
+            }
+        }
+        else{
+            $showError = "Password don't match";
+        }
+        header("Location: ../index.php?signupSuccess=false&&error=$showError");
+    }
+}
+?>
+
+
+----------------------------------------------------------------------------------------------------------
+style.css
+
+:root{
+    --p-color:rgb(255, 255, 255);
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* -------Start of header ------- */
+header{
+    width: 100%;
+    height: 50px;
+    background: #000;
+}
+#navbar{
+    width: 90%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: auto;
+    color: white;
+}
+.nav-left , .nav-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+.nav-left h1{
+    /* font-size: 35px; */
+    cursor: pointer;
+}
+/* .nav-left h1 span{
+    color: rgb(0, 225, 255);
+} */
+/* .nav-left h1:hover{
+    color: rgb(0, 225, 255);
+} */
+/* .nav-left h1 span:hover{
+    color: white;
+} */
+.nav-left ul{
+    display: flex;
+    align-items: center;
+    list-style: none;
+}
+.nav-left ul li a{
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    margin: 0 10px;
+    padding:0  4px;
+}
+.nav-left ul a{
+    text-decoration: none;
+    color: white;
+}
+.nav-left ul li a:hover{
+    color: var(--p-color);
+    transform: scale(1.05);
+}
+.input-box{
+    width: 220px;
+    height: 25px;
+    border-radius: 5px;
+    padding: 0 5px;
+    /* color: black; */
+}
+
+.btn{
+    width: 70px;
+    height: 25px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    background: var(--p-color);
+}
+.btn:hover{
+    border: 2px solid white;
+    background: none;
+    color: white;
+}
+/* 
+.search-btn{
+    border: 2px solid white;
+    background: none;
+    color: white;
+}
+.search-btn:hover{
+    background:  rgb(81, 255, 0);
+    border: none;
+    color: black;
+} */
+
+/* -------End of header ------- */
+
+.container{
+    width: 100%;
+    height: auto;
+    /* background: rgb(235 235 235); */
+}
+.landing{
+    height: 60vh;
+    width: 100%;
+}
+.landing img{
+    height: 60vh;
+    width: 100%;
+    z-index: -1;
+}
+.landing div{
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: 60vh;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.landing h1{
+    font-size: 100px;
+    border-bottom: 2px solid black;
+}
+.row{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 1rem;
+    /* align-items: center;
+    justify-content: center; */
+    width: 70%;
+    height: auto;
+    margin: auto;
+    padding: 10px;
+}
+.card{
+    width: 100%;
+    height: 100%;
+    border: 2px solid black;
+    border-radius: 10px;
+    /* background: rgb(235 237 235); */
+    text-align: justify;
+    padding: 10px;
+    margin: 5px;
+}
+/* .card:hover{
+    background: black;
+    color: var(--p-color);
+} */
+.category-img{
+    width: 100%;
+    height: 50%;
+    border-radius: 5px;
+}
+.card-btn{
+    border: 2px solid black;
+    border-radius: 5px;
+    margin: 5px 0px;
+    width: auto;
+    padding: 3px;
+    color: var(--p-color);
+    background: black;
+}
+.card-btn:hover{
+    /* border: none; */
+    color: black;
+    background: var(--p-color);
+}
+
+
+/* ------Category-------- */
+.categoryForm{
+    width: 50%;
+    height: auto;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* justify-content: left; */
+    /* background: rgb(122, 122, 122); */
+    font-size: 20px;
+}
+.categoryForm label{
+    padding: 5px;
+    margin-top: 10px 0;
+}
+.categoryForm input{
+    height: 30px;
+    padding: 10px;
+    margin-top: 10px 0;
+    font-size: 20px;
+}
+.categoryForm button{
+    padding: 10px;
+    margin-top: 20px 0;
+    font-size: 20px;
+}
+
+/* -------Start of footer ------- */
+footer{
+    width: 100%;
+    background: #000;
+    /* position: relative;
+    bottom: 0; */
+}
+footer p{
+    text-align: center;
+    color: white;
+    padding: 5px 0;
+}
+/* -------End of footer ------- */
+
+/* Utility Classes */
+.text-center{
+    text-align: center;
+}
+.text-red{
+    color: red;
+}
+
+----------------------------------------------------------------------------------------------------------
+
+styleLoginSignup.css
+
+.container{
+    width: 100%;
+    height: 87.4vh;
+    background: rgb(248, 248, 248);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.box{
+    width: 40%;
+    height: auto;
+    background: white;
+    padding: 10px;
+}
+.box form{
+    width: 100%;
+    height: auto;
+    background: white;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.box form p, .box form input, .box form button{
+    margin: 5px 0;
+    padding: 5px 0;
+    font-size: 20px;
+}
+.box form input{
+    margin: 0 0 5px 0;
+}
+
+----------------------------------------------------------------------------------------------------------
+
+
+styleThreadList.css
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.container {
+  width: 60%;
+  height: auto;
+  min-height: 40vh;
+  background: rgb(219 217 217);
+  margin: 20px auto;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 5px;
+}
+.container h1 {
+  font-size: 50px;
+  margin: 10px 0;
+  padding: 5px;
+}
+.container p,
+.container a {
+  font-size: 18px;
+  margin: 10px 0;
+  padding: 5px;
+}
+.container2 {
+  width: 60%;
+  height: auto;
+  min-height: 42vh;
+  margin: 10px auto;
+  border-radius: 5px;
+  padding: 5px;
+}
+.container2 h1 {
+  font-size: 30px;
+  margin: 5px 0;
+  padding: 5px 0;
+}
+.questions-box {
+  display: flex;
+  margin: 10px 0;
+}
+.user img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.container3 {
+  width: 100%;
+  min-height: 20vh;
+  background: rgb(219 217 217);
+  padding: 20px;
+  border: 2px solid black;
+}
+.container3 p {
+  font-size: 20px;
+}
+.container3 p:nth-child(1) {
+  font-size: 50px;
+}
+
+.container4 {
+  width: 60%;
+}
+.discussionForm {
+  display: flex;
+  flex-direction: column;
+}
+.discussionForm label {
+  font-size: 20px;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+.discussionForm input,
+.discussionForm textarea {
+  font-size: 20px;
+  padding: 5px 0;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+#submit {
+  width: 110px;
+  background: black;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.blur {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+----------------------------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------------------------
