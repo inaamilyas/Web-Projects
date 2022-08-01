@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FACEBOOK CLONE | INAM ILYAS</title>
+
+    <!-- Stylesheet  -->
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <!-- -------NAVBAR ---------->
+    <nav>
+        <div class="navLeft">
+            <img src="images/logo.png" alt="LOGO" class="logo">
+            <ul>
+                <li><a href= "#"><img src="images/notification.png" alt=""></a></li>
+                <li><img src="images/inbox.png" alt=""></li>
+                <li><img src="images/video.png" alt=""></li>
+            </ul>
+        </div>
+        <div class="navRight">
+            <div class="searchBox">
+                <img src="images/search.png" alt="">
+                <input type="text" name="" id="" placeholder="Search">
+            </div>
+            <div class="navUserIcon online" onclick="settingsManuToggle()">
+                <img src="images/profile-pic.png" alt="">
+            </div>
+        </div>
+        <!-- -----DROP DOWN MANU------- -->
+        <div class="settingsManu">
+
+            <div id="darkBtn" class="darkBtnOn">
+                <span></span>
+            </div>
+
+            <div class="settingsManuInner">
+                <div class="userProfile">
+                    <img src="images/profile-pic.png" alt="">
+                    <div>
+                        <p>Inam Ilyas</p>
+                        <a href="">See Your Profile</a>
+                    </div>
+                </div>
+                <hr>
+                <div class="userProfile">
+                    <img src="images/feedback.png" alt="">
+                    <div>
+                        <p>Give Feedback</p>
+                        <a href="">Help us to improve the design</a>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="settingsLinks">
+                    <img src="images/setting.png" alt="" class="settingsIcon">
+                    <a href="#">Settings & Privacy <img src="images/arrow.png" alt="" width="10px"></a>
+                </div>
+                <div class="settingsLinks">
+                    <img src="images/help.png" alt="" class="settingsIcon">
+                    <a href="#">Help & Support <img src="images/arrow.png" alt="" width="10px"></a>
+                </div>
+                <div class="settingsLinks">
+                    <img src="images/display.png" alt="" class="settingsIcon">
+                    <a href="#">Display & Accessibility <img src="images/arrow.png" alt="" width="10px"></a>
+                </div>
+                <div class="settingsLinks">
+                    <img src="images/logout.png" alt="" class="settingsIcon">
+                    <a href="#">Logout <img src="images/arrow.png" alt="" width="10px"></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container">
+
+        <!-- ---------------LEFT SIDEBAR--------------- -->
+        <div class="leftSidebar">
+            <div class="impLinks">
+                <a href="#"><img src="images/news.png" alt=""> Latest News</a>
+                <a href="#"><img src="images/friends.png" alt=""> Friends</a>
+                <a href="#"><img src="images/group.png" alt=""> Group</a>
+                <a href="#"><img src="images/marketplace.png" alt=""> Marketplace</a>
+                <a href="#"><img src="images/news.png" alt=""> Latest News</a>
+                <a href="#"><img src="images/watch.png" alt=""> Watch</a>
+                <a href="#">See More</a>
+            </div>
+
+            <div class="shortcutLinks">
+                <p>Your Shortcuts</p>
+                <a href="#"><img src="images/shortcut-1.png" alt=""> Web Developers</a>
+                <a href="#"><img src="images/shortcut-2.png" alt=""> Web Design Course</a>
+                <a href="#"><img src="images/shortcut-3.png" alt=""> Full Stack Developement</a>
+                <a href="#"><img src="images/shortcut-4.png" alt=""> Website Expert</a>
+            </div>
+        </div>
+
+        <!-- ---------------MAIN CONTENT--------------- -->
+        <div class="mainContent">
+            <!-- -------------STORIES------------------ -->
+            <div class="storyGallery">
+                <div class="story story1">
+                    <img src="images/upload.png" alt="">
+                    <p>Post Story</p>
+                </div>
+                <div class="story story2">
+                    <img src="images/member-1.png" alt="">
+                    <p>Alison</p>
+                </div>
+                <div class="story story3">
+                    <img src="images/member-2.png" alt="">
+                    <p>Jackson</p>
+                </div>
+                <div class="story story4">
+                    <img src="images/member-3.png" alt="">
+                    <p>Samona</p>
+                </div>
+                <div class="story story5">
+                    <img src="images/member-4.png" alt="">
+                    <p>John Doe</p>
+                </div>
+            </div>
+
+            <!-- -------------WRITE POSTS------------------ -->
+            <div class="writePostContainer">
+                <div class="userProfile">
+                    <img src="images/profile-pic.png" alt="">
+                    <div>
+                        <p>Inam Ilyas</p>
+                        <small>Public</small>
+                    </div>
+                </div>
+
+                <div class="postInputContainer">
+                    <textarea name="" id="" rows="3" placeholder="What's on your mind?"></textarea>
+                    <div class="addPostLinks">
+                        <a href="#"><img src="images/live-video.png" alt=""> Live Video</a>
+                        <a href="#"><img src="images/photo.png" alt=""> Photo/Video</a>
+                        <a href="#"><img src="images/feeling.png" alt=""> Feeling/Activity</a>
+                    </div>
+                </div>
+            </div>
+            <!-- -----------POST1------------ -->
+            <div class="postContainer">
+                <div class="postRow">
+                    <div class="userProfile">
+                        <img src="images/profile-pic.png" alt="">
+                        <div>
+                            <p>Inam Ilyas</p>
+                            <span>June 24 2021, 17:23</span>
+                        </div>
+                    </div>
+                    <div class="dots">
+                        <div class="point"></div>
+                        <div class="point"></div>
+                        <div class="point"></div>
+                    </div>
+                </div>
+                <p class="postText">Inam is a <span>Good Boy</span>. He is a Web Developer <a
+                        href="#">#inaam.ilyas.5</a> <a href="#">#facebook</a></p>
+                <img src="images/feed-image-1.png" alt="" class="postImg">
+
+                <div class="postRow">
+                    <div class="activityIcons">
+                        <div><img src="images/like-blue.png" alt=""> 120</div>
+                        <div><img src="images/comments.png" alt=""> 10</div>
+                        <div><img src="images/share.png" alt=""> 34</div>
+                    </div>
+                    <div class="postProfileIcons">
+                        <img src="images/profile-pic.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <!-- -------------POST2------------------ -->
+            <div class="postContainer">
+                <div class="postRow">
+                    <div class="userProfile">
+                        <img src="images/profile-pic.png" alt="">
+                        <div>
+                            <p>Inam Ilyas</p>
+                            <span>Fab 23 2021, 02:56</span>
+                        </div>
+                    </div>
+                    <div class="dots">
+                        <div class="point"></div>
+                        <div class="point"></div>
+                        <div class="point"></div>
+                    </div>
+                </div>
+                <p class="postText">Inam is a <span>Good Boy</span>. He is a Web Developer <a
+                        href="#">#inaam.ilyas.5</a> <a href="#">#Trending 1</a></p>
+                <img src="images/feed-image-2.png" alt="" class="postImg">
+
+                <div class="postRow">
+                    <div class="activityIcons">
+                        <div><img src="images/like.png" alt="">342745K</div>
+                        <div><img src="images/comments.png" alt=""> 6468K</div>
+                        <div><img src="images/share.png" alt=""> 23645K</div>
+                    </div>
+                    <div class="postProfileIcons">
+                        <img src="images/profile-pic.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <!-- -----------POST3------------ -->
+            <div class="postContainer">
+                <div class="postRow">
+                    <div class="userProfile">
+                        <img src="images/profile-pic.png" alt="">
+                        <div>
+                            <p>Inam Ilyas</p>
+                            <span>June 24 2021, 17:23</span>
+                        </div>
+                    </div>
+                    <div class="dots">
+                        <div class="point"></div>
+                        <div class="point"></div>
+                        <div class="point"></div>
+                    </div>
+                </div>
+                <p class="postText">Inam is a <span>Good Boy</span>. He is a Web Developer <a
+                        href="#">#inaam.ilyas.5</a> <a href="#">#facebook</a></p>
+                <img src="images/feed-image-3.png" alt="" class="postImg">
+
+                <div class="postRow">
+                    <div class="activityIcons">
+                        <div><img src="images/like-blue.png" alt=""> 120</div>
+                        <div><img src="images/comments.png" alt=""> 10</div>
+                        <div><img src="images/share.png" alt=""> 34</div>
+                    </div>
+                    <div class="postProfileIcons">
+                        <img src="images/profile-pic.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <!-- -------------POST4------------------ -->
+            <div class="postContainer">
+                <div class="postRow">
+                    <div class="userProfile">
+                        <img src="images/profile-pic.png" alt="">
+                        <div>
+                            <p>Inam Ilyas</p>
+                            <span>Fab 23 2021, 02:56</span>
+                        </div>
+                    </div>
+                    <div class="dots">
+                        <div class="point"></div>
+                        <div class="point"></div>
+                        <div class="point"></div>
+                    </div>
+                </div>
+                <p class="postText"><span>Hard Work</span> is key to success.<a href="#">#inamilyas</a> <a
+                        href="#">#hardworking</a></p>
+                <img src="images/feed-image-4.png" alt="" class="postImg">
+
+                <div class="postRow">
+                    <div class="activityIcons">
+                        <div><img src="images/like.png" alt="">3</div>
+                        <div><img src="images/comments.png" alt=""> 0</div>
+                        <div><img src="images/share.png" alt="">1</div>
+                    </div>
+                    <div class="postProfileIcons">
+                        <img src="images/profile-pic.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="loadMoreBtn">Load More</button>
+
+        </div>
+
+
+        <!-- ---------------RIGHT SIDEBAR--------------- -->
+        <div class="rightSidebar">
+
+            <div class="sidebarTitle">
+                <h4>Events</h4>
+                <a href="#">See All</a>
+            </div>
+
+            <div class="events">
+                <div class="leftEvent">
+                    <h3>18</h3>
+                    <span>March</span>
+                </div>
+                <div class="rightEvent">
+                    <h4>Social Media</h4>
+                    <p><img src="images/location-icon.png" style="width: 12px; height: auto;">Willson Tech Park</p>
+                    <a href="#">More Info</a>
+                </div>
+            </div>
+            <div class="events">
+                <div class="leftEvent">
+                    <h3>12</h3>
+                    <span>June</span>
+                </div>
+                <div class="rightEvent">
+                    <h4>Mobile Marketing</h4>
+                    <p><img src="images/location-icon.png" style="width: 12px; height: auto;"> INAM Tech Park</p>
+                    <a href="#">More Info</a>
+                </div>
+
+            </div>
+            <!-- ------------------------------------------------ -->
+            <div class="sidebarTitle">
+                <h4>Advartisements</h4>
+                <a href="#">Close</a>
+            </div>
+            <img src="images/advertisement.png" alt class="sidebarAds">
+
+            <div class="sidebarTitle">
+                <h4>Conversation</h4>
+                <a href="#">Hide Chat</a>
+            </div>
+
+            <div class="onlineList">
+                <div class="online">
+                    <img src="images/member-2.png" alt="">
+                </div>
+                <p>Alison Mina</p>
+            </div>
+            <div class="onlineList">
+                <div class="online">
+                    <img src="images/member-1.png" alt="">
+                </div>
+                <p>Jackson Aston</p>
+            </div>
+            <div class="onlineList">
+                <div class="online">
+                    <img src="images/member-3.png" alt="">
+                </div>
+                <p>Samona Rose</p>
+            </div>
+
+
+
+        </div>
+    </div>
+    <!-- -------FOOTER---------- -->
+    <div class="footer">
+        <p>Coprright &copy; 2021 - INAMILAYS</p>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="js/script.js"></script>
+</body>
+
+</html>
