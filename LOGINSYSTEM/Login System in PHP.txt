@@ -1,0 +1,241 @@
+dbconnect.php
+
+<?php
+$server = "localhost";
+$username ="root";
+$password = "";
+$database= "users";
+$connect = mysqli_connect($server, $username, $password, $database);
+if(!$connect){
+    die("ERROR" . mysqli_connect_error());
+}
+
+?>
+
+
+-------------------------------------------------------------------------------------------
+nav.php
+
+<?php
+if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true){
+    $loggedin = true;
+}
+else{
+    $loggedin = false;
+}
+
+echo '<nav id="navbar">
+    <a href="/PHP/LOGINSYSTEM/welcome.php" class="nav_items"><h1>PHP LOGIN SYSTEM</h1></a>
+    <ul>
+        <li><a href="/PHP/LOGINSYSTEM/welcome.php" class="nav_items">Home</a></li>';
+
+        if(!$loggedin){
+        echo '<li><a href="/PHP/LOGINSYSTEM//login.php" class="nav_items">Login</a></li>
+        <li><a href="/PHP/LOGINSYSTEM//signup.php" class="nav_items">Sign Up</a></li>';
+        }
+
+        if($loggedin){
+        echo '<li><a href="/PHP/LOGINSYSTEM//logout.php" class="nav_items">Logout</a></li>';
+        }
+    
+   echo'</ul>
+</nav>';
+?>
+
+
+-------------------------------------------------------------------------------------------
+login.php
+
+<?php
+$login = false;
+$showError = false;
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    include "partials/_dbconnect.php";
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+
+    // $sql = "SELECT * FROM `users` WHERE `Name` = '$username' AND`Password` = '$password' ";
+    $sql = "SELECT * FROM `users` WHERE `Name` = '$username'";
+    $result = mysqli_query($connect, $sql);
+    $num = mysqli_num_rows($result);
+    if($num == 1){
+        while($rows = mysqli_fetch_assoc($result)){
+            if(password_verify($password, $rows['Password'])){
+                $login = true;
+                session_start();
+                $_SESSION['loggedin'] = true;
+                $_SESSION['username'] = $username;
+                header("location: welcome.php"); //function to redirect
+            }
+            else{
+                $showError = "Invalid Credentials";
+            }
+        }
+    }
+    else{
+        $showError = "Invalid Credentials";
+    }
+}
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSecure | Login</title>
+    <link rel="stylesheet" href="partials/style.css">
+</head>
+<body>
+    <?php require "partials/_nav.php"; ?>
+    
+    <?php
+    if($login){
+        echo "You are logged in"; 
+    }
+    if($showError){
+        echo $showError;
+    }
+    ?>
+
+    <div class="container">
+        <h1 class="t-center">Signin To Our Website</h1>
+        <form action="/PHP/LOGINSYSTEM/login.php" method="post" class="form">
+            <input type="text" name="username" placeholder="Enter UserName" required>
+            <input type="password" name="password" placeholder="Enter password" required>
+            <input type="submit" placeholder="Login">
+        </form>
+    </div>
+</body>
+</html>
+
+
+-------------------------------------------------------------------------------------------
+
+logout.php
+
+<?php
+session_start();
+session_unset();
+session_destroy();
+header("location: login.php");
+exit;
+?>
+
+-------------------------------------------------------------------------------------------
+
+signup.php
+
+<?php
+$showAlert = false;
+$showError = false;
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    include "partials/_dbconnect.php";
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $confirmPassword = $_POST["confirmPassword"];
+
+    // $exists = false;
+
+    //Check whether user name exists
+    $existSql = "SELECT * FROM `users` WHERE `Name` = '$username'";
+    $result = mysqli_query($connect, $existSql);
+    $numExistRows = mysqli_num_rows($result);
+    if($numExistRows >0 ){
+        // $exist = true;
+        $showError = "Username already exists";
+    }
+    else{
+        // $exist = false;
+        if($password == $confirmPassword){
+            $hash = password_hash($password, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO `users` (`Name`, `Password`, `Date`) VALUES ( '$username', '$hash', current_timestamp())";
+            $result = mysqli_query($connect, $sql);
+            if($result){
+                $showAlert = true;
+                // header("location: login.php");
+            }
+        }
+        else{
+            $showError = "Password don't match";
+        }
+    }
+}
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSecure | SignUp</title>
+    <link rel="stylesheet" href="partials/style.css">
+</head>
+<body>
+    <?php require "partials/_nav.php"; ?>
+    
+    <?php
+    if($showAlert){
+        echo "Account created successfully<br>";
+    }
+    if($showError){
+        echo $showError;
+    }
+    ?>
+
+    <div class="container">
+        <h1 class="t-center">Sign Up To Our Website</h1>
+        <form action="/PHP/LOGINSYSTEM/signup.php" method="post" class="form">
+            <input type="text" name="username" maxlength="13" placeholder="Enter UserName" required>
+            <input type="password" name="password" maxlength="23" placeholder="Enter password" required>
+            <input type="password" name="confirmPassword" maxlength="23" placeholder="Confirm password" required>
+            <input type="submit" placeholder="SignUp">
+        </form>
+    </div>
+</body>
+</html>
+
+
+-------------------------------------------------------------------------------------------
+
+welcome.php
+
+<?php
+session_start();
+
+if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin']!=true){
+    header("location: login.php");
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSecure | Wellcome -<?php echo $_SESSION['username'] ?> </title>
+    <link rel="stylesheet" href="partials/style.css">
+</head>
+<body>
+    <?php require "partials/_nav.php"; ?>
+    <h1 class="t-center">Wellcome -<?php echo $_SESSION['username'] ?></h1>
+    <h2>This is welcome.php</h2>
+    <h3><a href="logout.php">Click Here</a> to logout</h3>
+</body>
+</html>
+
+-------------------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------------------
